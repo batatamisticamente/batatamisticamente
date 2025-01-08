@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Imagem com Z-Index</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #BackgroundP {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            width: 1700px;
+            height: 1000px;
+            background-color: #fafafa;
+            border-radius: 0%;
+            z-index: -1;
+        }
+        .imagem {
+            position: fixed;
+            z-index: 1;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: #ffffff 2px solid;
+            background-color: #ffffff;
+            transition: transform 0.5s ease;
+        }
+        .imagem:hover {
+            border: #595959 4px solid;
+            z-index: 10;
+            transform: scale(1.2);
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+        #nameUser {
+            position: fixed;
+            background-color: #fafafa;
+            color: #000;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 5px;
+            display: none;
+            z-index: 100;
+        }
+        #aside {
+            background-color: #dcdcdc;
+            width: 220px;
+            height: 1200px;
+            position: fixed;
+            border: 4px solid #595959;
+        }
+    </style>
+</head>
+<body>
+    <div id="container" style="position: relative;">
+        <img class="imagem" id="imagem1" src="Branco.jpg" alt=" " style="top: 0px; right: 1625px;" />
+        <img class="imagem" id="imagem2" src="Branco.jpg" alt=" " style="top: 75px; right: 1625px;" />
+        <img class="imagem" id="imagem3" src="Branco.jpg" alt=" " style="top: 150px; right: 1625px;" />
+        <img class="imagem" id="imagem4" src="Branco.jpg" alt=" " style="top: 225px; right: 1625px;" />
+        <img class="imagem" id="imagem5" src="Branco.jpg" alt=" " style="top: 300px; right: 1625px;" />
+        <img class="imagem" id="imagem6" src="Branco.jpg" alt=" " style="top: 375px; right: 1625px;" />
+        <img class="imagem" id="imagem7" src="Branco.jpg" alt=" " style="top: 450px; right: 1625px;" />
+        <img class="imagem" id="imagem8" src="Branco.jpg" alt=" " style="top: 525px; right: 1625px;" />
+        <img class="imagem" id="imagem9" src="Branco.jpg" alt=" " style="top: 600px; right: 1625px;" />
+        <img class="imagem" id="imagem10" src="Branco.jpg" alt=" " style="top: 675px; right: 1625px;" />
+        <img class="imagem" id="imagem11" src="Branco.jpg" alt=" " style="top: 0px; right: 1525px;" />
+        <img class="imagem" id="imagem12" src="Branco.jpg" alt=" " style="top: 75px; right: 1525px;" />
+        <img class="imagem" id="imagem13" src="Branco.jpg" alt=" " style="top: 150px; right: 1525px;" />
+        <img class="imagem" id="imagem14" src="Branco.jpg" alt=" " style="top: 225px; right: 1525px;" />
+        <img class="imagem" id="imagem15" src="Branco.jpg" alt=" " style="top: 300px; right: 1525px;" />
+        <img class="imagem" id="imagem16" src="Branco.jpg" alt=" " style="top: 375px; right: 1525px;" />
+        <img class="imagem" id="imagem17" src="Branco.jpg" alt=" " style="top: 450px; right: 1525px;" />
+        <img class="imagem" id="imagem18" src="Branco.jpg" alt=" " style="top: 525px; right: 1525px;" />
+        <img class="imagem" id="imagem19" src="Branco.jpg" alt=" " style="top: 600px; right: 1525px;" />
+        <img class="imagem" id="imagem20" src="Branco.jpg" alt=" " style="top: 675px; right: 1525px;" />
+        <div class="overlay" id="overlay" style="display: none;">Carregando...</div>
+    </div>
+    <div id="nameUser"></div>
+    <div id="BackgroundP"></div>
+    <div id="aside"></div>
+    <script>
+        let membros = new XMLHttpRequest();
+        membros.open('GET', 'https://discord.com/api/guilds/1268871007339282557/widget.json', true);
+
+        membros.onload = function () {
+            if (membros.status === 200) {
+                let dados = JSON.parse(membros.responseText);
+                console.log("Nome do servidor:", dados.name);
+
+                for (let i = 0; i < 20; i++) {
+                    let membro = dados.members[i];
+                    let imagem = document.getElementById(`imagem${i + 1}`);
+
+                    if (membro && membro.avatar_url && imagem) {
+                        imagem.src = membro.avatar_url;
+                        imagem.alt = membro.username;
+                    }
+                }
+
+                document.getElementById('overlay').style.display = 'none';
+
+                document.querySelectorAll('.imagem').forEach(function (imagem) {
+                    imagem.addEventListener('mouseover', function () {
+                        let nameUser = document.getElementById('nameUser');
+                        nameUser.style.display = "block";
+                        nameUser.style.top = `${this.offsetTop + 20}px`;
+                        nameUser.style.left = `${this.offsetLeft + 110}px`;
+                        nameUser.textContent = this.alt;
+                    });
+
+                    imagem.addEventListener('mouseout', function () {
+                        let nameUser = document.getElementById('nameUser');
+                        nameUser.style.display = "none";
+                    });
+                });
+            }
+        };
+
+        membros.onerror = function () {
+            console.error("Erro na requisição.");
+            document.getElementById('overlay').innerText = "Erro na requisição.";
+        };
+
+        document.getElementById('overlay').style.display = 'flex';
+        membros.send();
+    </script>
+</body>
+</html>
